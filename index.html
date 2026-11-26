@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book Your Shoot — USA Media Group</title>
+<meta name="description" content="Pick a weekday and a start time for your 1-hour shoot with USA Media Group.">
+<style>
+  :root{
+    --navy:#0b1b3f; --navy-2:#13285a; --red:#c8102e; --bg:#f5f6fa; --card:#fff;
+    --text:#14182b; --muted:#6b7285; --line:#e3e6ee; --ok:#127a46; --disabled:#eceef3;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
+  header{background:var(--navy);color:#fff;padding:28px 20px 34px}
+  .wrap{max-width:760px;margin:0 auto}
+  .brand{font-size:13px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;display:flex;align-items:center;gap:8px}
+  .brand:before{content:"";width:22px;height:3px;background:var(--red);display:inline-block}
+  h1{font-size:30px;margin:10px 0 6px;line-height:1.15}
+  header p{margin:0;opacity:.85;max-width:560px}
+  main{padding:0 16px 48px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:18px}
+  main .card:first-child{margin-top:-18px}
+  h2{font-size:17px;margin:0 0 4px}
+  .hint{color:var(--muted);font-size:14px;margin:0 0 14px}
+  .step{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;margin-right:8px;vertical-align:1px}
+  .week-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px}
+  .week-label:first-of-type{margin-top:4px}
+  .days{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .day,.slot{font:inherit;border:1.5px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;color:var(--text);transition:border-color .15s,background .15s}
+  .day{padding:10px 4px;text-align:center}
+  .day .dow{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .day .num{display:block;font-size:18px;font-weight:700}
+  .day .tag{display:block;font-size:11px;color:var(--muted);min-height:14px}
+  .day:hover:not(:disabled),.slot:hover:not(:disabled){border-color:var(--navy-2)}
+  .day:disabled{background:var(--disabled);color:#a3a8b6;cursor:not-allowed;border-color:transparent}
+  .day:disabled .dow,.day:disabled .tag{color:#a3a8b6}
+  .day.booked .num{text-decoration:line-through}
+  .day[aria-pressed="true"],.slot[aria-pressed="true"]{border-color:var(--navy);background:var(--navy);color:#fff}
+  .day[aria-pressed="true"] .dow,.day[aria-pressed="true"] .tag{color:#cfd6ea}
+  .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .slot{padding:14px 8px;font-weight:600;font-size:16px}
+  .slot small{display:block;font-weight:400;font-size:12px;opacity:.7}
+  form{display:grid;gap:12px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  label{font-size:13px;font-weight:600;display:block;margin-bottom:4px}
+  input,textarea{width:100%;font:inherit;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--text)}
+  input:focus,textarea:focus{outline:none;border-color:var(--navy-2)}
+  textarea{min-height:84px;resize:vertical}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .summary{background:#f0f3fa;border-radius:10px;padding:12px 14px;font-size:15px}
+  .summary strong{color:var(--navy)}
+  button.primary{font:inherit;font-weight:700;font-size:16px;background:var(--red);color:#fff;border:0;border-radius:10px;padding:14px;cursor:pointer}
+  button.primary:disabled{opacity:.55;cursor:wait}
+  button.link{font:inherit;background:none;border:0;color:var(--navy-2);text-decoration:underline;cursor:pointer;padding:0}
+  .msg{border-radius:10px;padding:12px 14px;font-size:14px;margin-top:12px}
+  .msg.err{background:#fdecee;color:#8d0b20}
+  .msg.info{background:#fff6dd;color:#7a5a00}
+  .done{text-align:center;padding:34px 20px}
+  .done .check{width:56px;height:56px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;font-size:28px;margin:0 auto 12px}
+  .done h2{font-size:22px}
+  .loading{color:var(--muted);font-size:14px;padding:8px 0}
+  .hidden{display:none !important}
+  footer{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 32px}
+  @media (max-width:560px){
+    h1{font-size:25px}
+    .days{gap:6px}
+    .day{padding:8px 2px}
+    .day .num{font-size:16px}
+    .row{grid-template-columns:1fr}
+    .slot{font-size:15px;padding:12px 4px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">USA Media Group</div>
+    <h1>Book your shoot</h1>
+    <p>A 1-hour on-site shoot with our crew. Pick a weekday, choose a start time, and you're set. We take one shoot per day.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="preview" class="msg info hidden" style="margin-top:-18px;margin-bottom:28px">
+    Preview mode: the booking backend isn't connected yet, so nothing is saved.
+  </div>
+
+  <section id="booking">
+    <div class="card">
+      <h2><span class="step">1</span>Pick a day</h2>
+      <p class="hint">Monday–Friday. Grey days are already taken.</p>
+      <div id="loading" class="loading">Loading availability…</div>
+      <div id="loadError" class="msg err hidden">
+        Couldn't load availability. <button class="link" id="retry" type="button">Try again</button>
+      </div>
+      <div id="calMsg" class="msg err hidden"></div>
+      <div id="calendar"></div>
+    </div>
+
+    <div class="card hidden" id="slotCard">
+      <h2><span class="step">2</span>Choose a start time</h2>
+      <p class="hint">All times are Mountain Time (Denver).</p>
+      <div class="slots" id="slots"></div>
+    </div>
+
+    <div class="card hidden" id="formCard">
+      <h2><span class="step">3</span>Your details</h2>
+      <p class="hint">We'll email you a confirmation.</p>
+      <form id="form" novalidate>
+        <div class="summary" id="summary"></div>
+        <div class="row">
+          <div><label for="name">Your name *</label><input id="name" name="name" autocomplete="name" required></div>
+          <div><label for="business">Business</label><input id="business" name="business" autocomplete="organization"></div>
+        </div>
+        <div class="row">
+          <div><label for="phone">Phone *</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
+          <div><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+        </div>
+        <div>
+          <label for="details">What are we shooting?</label>
+          <textarea id="details" name="details" placeholder="Location address, what you want to show, anything we should know"></textarea>
+        </div>
+        <div class="hp" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+        <button class="primary" id="submit" type="submit">Confirm booking</button>
+        <div id="formError" class="msg err hidden"></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="done" class="card done hidden">
+    <div class="check">✓</div>
+    <h2>You're booked!</h2>
+    <p id="doneText"></p>
+    <p class="hint">A confirmation is on its way to your inbox. Need to reschedule? Just reply to that email.</p>
+  </section>
+</main>
+
+<footer>© USA Media Group · Denver, Colorado</footer>
+
+<script>
+/* ===== Settings ===== */
+const SCRIPT_URL = 'PASTE_APPS_SCRIPT_URL_HERE'; // Google Apps Script Web App URL (ends with /exec)
+const TIMEZONE = 'America/Denver';
+const SLOTS = ['12:00', '13:00', '14:00'];
+const WEEKS_AHEAD = 4;       // must match Code.gs
+const MIN_DAYS_AHEAD = 1;    // must match Code.gs
+/* ==================== */
+
+const PREVIEW = !/^https:\/\/script\.google\.com\//.test(SCRIPT_URL);
+const $ = id => document.getElementById(id);
+let booked = new Set();
+let state = { date: null, time: null };
+
+function todayStr() {
+  // en-CA formats as yyyy-mm-dd
+  return new Intl.DateTimeFormat('en-CA', { timeZone: TIMEZONE, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+}
+function addDays(s, n) {
+  const d = new Date(s + 'T12:00:00Z');
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+function fmt(s, opts) {
+  return new Date(s + 'T12:00:00Z').toLocaleDateString('en-US', Object.assign({ timeZone: 'UTC' }, opts));
+}
+function prettyTime(t) {
+  const h = parseInt(t, 10);
+  return (h % 12 || 12) + ':00 ' + (h < 12 ? 'AM' : 'PM');
+}
+function dow(s) { return new Date(s + 'T12:00:00Z').getUTCDay(); }
+
+async function loadAvailability() {
+  $('loading').classList.remove('hidden');
+  $('loadError').classList.add('hidden');
+  if (PREVIEW) {
+    $('preview').classList.remove('hidden');
+    booked = new Set();
+    $('loading').classList.add('hidden');
+    renderCalendar();
+    return;
+  }
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    const res = await fetch(SCRIPT_URL + '?t=' + Date.now(), { signal: ctrl.signal });
+    const data = await res.json();
+    if (!data.ok) throw new Error('bad response');
+    booked = new Set(data.booked || []);
+    renderCalendar();
+  } catch (e) {
+    console.error('Availability load failed:', e);
+    $('loadError').classList.remove('hidden');
+  } finally {
+    clearTimeout(timer);
+    $('loading').classList.add('hidden');
+  }
+}
+
+function renderCalendar() {
+  const cal = $('calendar');
+  cal.textContent = '';
+  const today = todayStr();
+  const first = addDays(today, MIN_DAYS_AHEAD);
+  const last = addDays(today, WEEKS_AHEAD * 7);
+
+  // start from the Monday of the first bookable week
+  let monday = addDays(first, -((dow(first) + 6) % 7));
+  while (monday <= last) {
+    const label = document.createElement('div');
+    label.className = 'week-label';
+    label.textContent = 'Week of ' + fmt(monday, { month: 'short', day: 'numeric' });
+    const grid = document.createElement('div');
+    grid.className = 'days';
+    let any = false;
+
+    for (let i = 0; i < 5; i++) {
+      const d = addDays(monday, i);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'day';
+      btn.dataset.date = d;
+      const isBooked = booked.has(d);
+      const outOfRange = d < first || d > last;
+      const dowEl = document.createElement('span'); dowEl.className = 'dow'; dowEl.textContent = fmt(d, { weekday: 'short' });
+      const numEl = document.createElement('span'); numEl.className = 'num'; numEl.textContent = fmt(d, { month: 'short', day: 'numeric' });
+      const tagEl = document.createElement('span'); tagEl.className = 'tag';
+      if (isBooked) { btn.disabled = true; btn.classList.add('booked'); tagEl.textContent = 'Booked'; }
+      else if (outOfRange) { btn.disabled = true; tagEl.textContent = ''; }
+      else { tagEl.textContent = '3 times'; any = true; }
+      btn.append(dowEl, numEl, tagEl);
+      btn.setAttribute('aria-pressed', String(d === state.date));
+      btn.addEventListener('click', () => selectDate(d));
+      grid.appendChild(btn);
+    }
+    if (any || monday >= first) { cal.append(label, grid); }
+    monday = addDays(monday, 7);
+  }
+
+  // if the selected day got booked meanwhile, reset
+  if (state.date && booked.has(state.date)) resetSelection();
+}
+
+function selectDate(d) {
+  state.date = d;
+  state.time = null;
+  $('calMsg').classList.add('hidden');
+  document.querySelectorAll('.day').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.date === d)));
+  renderSlots();
+  $('slotCard').classList.remove('hidden');
+  $('formCard').classList.add('hidden');
+  $('slotCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderSlots() {
+  const wrap = $('slots');
+  wrap.textContent = '';
+  SLOTS.forEach(t => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'slot';
+    b.textContent = prettyTime(t);
+    const s = document.createElement('small');
+    s.textContent = 'to ' + prettyTime(String(parseInt(t, 10) + 1) + ':00');
+    b.appendChild(s);
+    b.setAttribute('aria-pressed', String(t === state.time));
+    b.addEventListener('click', () => selectTime(t));
+    wrap.appendChild(b);
+  });
+}
+
+function selectTime(t) {
+  state.time = t;
+  renderSlots();
+  $('summary').textContent = '';
+  const strong = document.createElement('strong');
+  strong.textContent = fmt(state.date, { weekday: 'long', month: 'long', day: 'numeric' }) + ' · ' + prettyTime(t) + '–' + prettyTime(String(parseInt(t, 10) + 1) + ':00') + ' MT';
+  $('summary').append('Your shoot: ', strong);
+  $('formCard').classList.remove('hidden');
+  $('formError').classList.add('hidden');
+  $('formCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function resetSelection() {
+  state = { date: null, time: null };
+  $('slotCard').classList.add('hidden');
+  $('formCard').classList.add('hidden');
+}
+
+function showFormError(text) {
+  $('formError').textContent = text;
+  $('formError').classList.remove('hidden');
+}
+
+$('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('formError').classList.add('hidden');
+  const f = e.target;
+  const payload = {
+    date: state.date,
+    time: state.time,
+    name: f.name.value.trim(),
+    business: f.business.value.trim(),
+    phone: f.phone.value.trim(),
+    email: f.email.value.trim(),
+    details: f.details.value.trim(),
+    website: f.website.value
+  };
+  if (!payload.date || !payload.time) return showFormError('Please pick a day and a time.');
+  if (!payload.name) return showFormError('Please enter your name.');
+  if (!payload.phone) return showFormError('Please enter your phone number.');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) return showFormError('Please enter a valid email.');
+
+  const btn = $('submit');
+  btn.disabled = true;
+  btn.textContent = 'Booking…';
+  try {
+    let data;
+    if (PREVIEW) {
+      await new Promise(r => setTimeout(r, 600));
+      data = { ok: true };
+    } else {
+      // text/plain body avoids a CORS preflight that Apps Script can't answer
+      const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+      data = await res.json();
+    }
+    if (data.ok) {
+      $('booking').classList.add('hidden');
+      $('preview').classList.add('hidden');
+      $('doneText').textContent = fmt(payload.date, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ' at ' + prettyTime(payload.time) + ' Mountain Time.';
+      $('done').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (data.error === 'taken') {
+      booked = new Set(data.booked || [...booked, payload.date]);
+      resetSelection();
+      renderCalendar();
+      $('calendar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      alertInline('Sorry — someone just booked that day. Please pick another one.');
+    } else {
+      const map = {
+        too_soon: 'That day is too soon to book. Please pick a later day.',
+        too_far: 'That day is too far ahead. Please pick an earlier day.',
+        weekend: 'We only shoot Monday to Friday.',
+        bad_email: 'Please enter a valid email.',
+        busy_try_again: 'Lots of bookings right now — please try again.'
+      };
+      showFormError(map[data.error] || 'Something went wrong. Please try again.');
+    }
+  } catch (err) {
+    console.error('Booking failed:', err);
+    showFormError('Network error. Please check your connection and try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Confirm booking';
+  }
+});
+
+function alertInline(text) {
+  const box = $('calMsg');
+  box.textContent = text;
+  box.classList.remove('hidden');
+}
+
+$('retry').addEventListener('click', loadAvailability);
+loadAvailability();
+</script>
+</body>
+</html>
